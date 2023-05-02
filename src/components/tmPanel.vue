@@ -1,7 +1,7 @@
 <template>
     <section class="section">
         <div class="box">
-            <h5 style="position: absolute">京东商品监控</h5>
+            <h5 style="position: absolute">天猫商品监控</h5>
             <el-button
                 class="delete"
                 type="danger"
@@ -15,7 +15,7 @@
                         v-for="item in list.data"
                         :key="item.id"
                         class="list move"
-                        :jd_id="item.id"
+                        :Tm_id="item.id"
                     >
                         <el-button
                             v-if="deletshow"
@@ -28,7 +28,7 @@
                         <router-link
                             :to="{
                                 path: '/detail',
-                                query: { type: 'jd', id: item.id },
+                                query: { type: 'tm', id: item.id },
                             }"
                         >
                             <div class="pic">
@@ -50,7 +50,7 @@
                 </ul>
             </div>
             <el-popover :visible="visible" placement="right" :width="560">
-                <p>请添加你想要监控的京东商品链接</p>
+                <p>请添加你想要监控的天猫商品链接</p>
                 <el-input
                     v-model="input"
                     placeholder="Please input"
@@ -82,7 +82,7 @@
 <script lang="ts">
 import { ref } from 'vue';
 import { Delete, CloseBold } from '@element-plus/icons-vue';
-import { addJdGoods, delJdGoods, getJdGoods } from '../api/steward';
+import { addTmGoods, delTmGoods, getTmGoods } from '../api/steward';
 export default {
     setup() {
         const visible = ref(false);
@@ -90,23 +90,24 @@ export default {
         const input = ref('');
 
         const handleHref = () => {
-            addJdGoods(input.value).then((res) => {
+            addTmGoods(input.value).then((res) => {
                 alert(res.message);
                 getList();
             });
         };
         let list = ref() as any;
         const getList = async () => {
-            const data = await getJdGoods();
+            const data = await getTmGoods();
             list.value = data;
         };
         getList();
         const deletegoods = async (event) => {
             const el = event.currentTarget.parentElement;
-            const id = el.getAttribute('jd_id');
-            const data = await delJdGoods(id);
-            alert(data.message);
-            getList();
+            const id = el.getAttribute('Tm_id');
+            delTmGoods(id).then((res) => {
+                alert(res.message);
+                getList();
+            });
         };
 
         const formatterImg = (str: string) => {

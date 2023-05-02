@@ -6,8 +6,8 @@
                 <navfrom />
             </div>
             <div class="main">
-                <show :option1="jdOption" :id-name="['Chart1']" />
-                <jdPanel />
+                <show :option1="TmOption" :id-name="['Chart1']" />
+                <TmPanel />
                 <el-table :data="tableData" border style="width: 100%">
                     <el-table-column prop="name" label="商品名称" width="180" />
                     <el-table-column prop="id" label="商品编号" />
@@ -26,16 +26,16 @@
 <script lang="ts">
 import navfrom from '../components/navfrom.vue';
 import show from '../components/show.vue';
-import jdPanel from '../components/jdPanel.vue';
-import { getAllJdCalculation, getJdChart } from '../api/steward';
+import TmPanel from '../components/tmPanel.vue';
+import { getAllTmCalculation, getTmChart } from '../api/steward';
 import { onMounted, ref } from 'vue';
 export default {
-    components: { navfrom, jdPanel, show },
+    components: { navfrom, TmPanel, show },
 
     setup() {
-        const jdOption = ref({
+        const TmOption = ref({
             title: {
-                text: '京东商品',
+                text: '天猫商品',
             },
             tooltip: {
                 trigger: 'axis',
@@ -67,7 +67,7 @@ export default {
         const tableData = ref();
 
         onMounted(async () => {
-            const { data } = await getJdChart();
+            const { data } = await getTmChart();
             const legend = [];
             let MaxLength = 0;
             let MaxTimeArr = [];
@@ -95,16 +95,16 @@ export default {
                 legend.push(el.name.trim().slice(0, 6));
                 return obj;
             });
-            jdOption.value.legend.data = legend;
-            jdOption.value.series = series;
-            jdOption.value.xAxis.data = MaxTimeArr.map((el) =>
+            TmOption.value.legend.data = legend;
+            TmOption.value.series = series;
+            TmOption.value.xAxis.data = MaxTimeArr.map((el) =>
                 new Date(parseInt(el)).toDateString(),
             );
-            const { data: caData } = await getAllJdCalculation();
+            const { data: caData } = await getAllTmCalculation();
             tableData.value = Object.keys(caData).map((el) => caData[el]);
         });
         return {
-            jdOption,
+            TmOption,
             tableData,
         };
     },
